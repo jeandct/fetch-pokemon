@@ -1,25 +1,46 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from 'react';
+import Axios from 'axios';
+import Pokemon from './components/Pokemon';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      pokemon: '',
+      pokemonImg: null,
+    };
+  }
+
+  handleInput = (e) => {
+    console.log(e.target.value);
+    this.setState({
+      pokemon: e.target.value,
+    });
+  };
+
+  fetchPokemon = () => {
+    let fetchURL = `https://pokeapi.co/api/v2/pokemon/${this.state.pokemon}`;
+    Axios.get(fetchURL).then((res) => {
+      console.log(res.data);
+      this.setState({
+        pokemonImg: res.data.sprites.front_default,
+      });
+    });
+  };
+
+  render() {
+    return (
+      <div>
+        <input
+          type='text'
+          onChange={this.handleInput}
+          value={this.state.pokemon}
+        />
+        <button onClick={this.fetchPokemon}>Search Pokemon</button>
+        <Pokemon pokemonImg={this.state.pokemonImg} />
+      </div>
+    );
+  }
 }
 
 export default App;
